@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AI Radar</title>
+    <link href="News.css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>AI Radar_Latest News in Artificial Intelligence</h1>
+    <input type="text" id="searchInput" placeholder="Search by title..." for="searchInput">
+    <label for="dateInput">Filter by Date:</label>
+    <input type="text" id="dateInput" placeholder="DD MMM YYYY">
+    <label for="monthInput">Filter by Month:</label>
+    <input type="month" id="monthInput" placeholder="MMM">
+    <button onclick="filter()">Filter</button>
+    <ul id="newsList"></ul>
+    <script>
+        function filter() {
+            const searchValue = document.getElementById("searchInput").value;
+            const dateValue = document.getElementById("dateInput").value;
+            const monthValue = document.getElementById("monthInput").value;
+
+            let filteredNews = news.filter(article => {
+                // filter by search term
+                if (searchValue && !article.title.toLowerCase().includes(searchValue.toLowerCase())) {
+                    return false;
+                }
+
+                // filter by date
+                if (dateValue) {
+                    const [articleDay, articleMonth, articleYear] = article.date.split(' ');
+                    const [articleDayValue, articleMonthValue, articleYearValue] = dateValue.split(' ');
+                    if (articleDay !== articleDayValue || articleMonth !== articleMonthValue || articleYear !== articleYearValue) {
+                        return false;
+
+                    }
+
+                }
+
+
+
+                // filter by month
+                if (monthValue) {
+                    var [articleDay, articleMonth, articleYear] = article.date.split(' ');
+
+                    if (articleMonth !== monthValue) {
+                        return false;
+                    }
+
+                }
+
+                return true;
+            });
+
+            displayNews(filteredNews);
+        }
+
+
+        function displayNews(news) {
+            const newsList = document.getElementById("newsList");
+            newsList.innerHTML = "";
+            news.forEach(article => {
+                const li = document.createElement("li");
+                const title = document.createElement("h2");
+                title.textContent = article.title;
+                const description = document.createElement("p");
+                description.textContent = article.desc;
+                const link = document.createElement("a");
+                link.href = article.link;
+                link.textContent = link;
+                const date = document.createElement("date");
+                date.textContent = article.date;
+                li.appendChild(title);
+                li.appendChild(description);
+                li.appendChild(link);
+                li.appendChild(date);
+                newsList.appendChild(li);
+            });
+        }
+
+        let news = [];
+        fetch("http://localhost:8000/news",
+                Headers = {
+                    'Content-Type': 'application/json'
+                }
+
+
+            )
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                news = data.news;
+                displayNews(news);
+            });
+    </script>
+</body>
+
+</html>
